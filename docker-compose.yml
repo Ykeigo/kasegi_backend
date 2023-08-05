@@ -1,0 +1,15 @@
+version: '3'
+services:
+  # service名
+  app:
+    # イメージ名
+    image: tips-share
+    # コンテナ名
+    container_name: sandbox-docker-compose
+    # ビルドに使用するDockerfileがあるディレクトリ指定
+    build: .
+    # マウントディレクトリ指定
+    volumes:
+      - .:/go/src/github.com/taisa831/sandbox-docker-compose-go
+    ports:
+      - "80:80"

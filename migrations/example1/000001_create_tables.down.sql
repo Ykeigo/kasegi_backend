@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS game_titles;
+DROP TABLE IF EXISTS game_matches;
