@@ -1,1 +1,3 @@
-# tips_share_backend
+# kasegi-backend
+
+kasegi（仮）のバックエンド
