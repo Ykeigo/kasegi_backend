@@ -5,12 +5,12 @@ FROM golang:1.20-bullseye
 WORKDIR /opt/sandbox-docker-compose-go
 
 # ホストのファイルをコンテナの作業ディレクトリにコピー
-COPY ./test-app .
+COPY ./src .
 # ADD . .
 
 # ビルド
 RUN go build -o app main.go
-
+RUN go install github.com/volatiletech/sqlboiler/v4@latest
 # 起動
 CMD ["/opt/sandbox-docker-compose-go/app"]
 
