@@ -4,7 +4,7 @@ sqlboilerにリアルDBのパスワードを書くな！！ローカルDBのは�
 ここのコピペ：https://dev.classmethod.jp/articles/db-migrate-with-golang-migrate/
 
 DB起動
-RUN docker run --rm -it -p 5432:5432 -e POSTGRES_PASSWORD=password --name postgres postgres
+docker run --rm -it -p 5432:5432 -e POSTGRES_PASSWORD=password --name postgres postgres
 
 接続
 psql -h localhost -p 5432 -U postgres -d postgres
