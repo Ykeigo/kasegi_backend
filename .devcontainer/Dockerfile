@@ -16,3 +16,5 @@ WORKDIR /workspaces/kasegi/src
 
 RUN go install github.com/volatiletech/sqlboiler/v4@latest\
     && go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
+
+RUN docker run --rm -it -p 5432:5432 -e POSTGRES_PASSWORD=password --name postgres postgres
