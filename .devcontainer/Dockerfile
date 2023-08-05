@@ -12,5 +12,7 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main' > /etc/
     && apt-get update\
     && apt-get install -y postgresql-client-12
 
+WORKDIR /workspaces/kasegi/src
+
 RUN go install github.com/volatiletech/sqlboiler/v4@latest\
     && go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
