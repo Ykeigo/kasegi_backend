@@ -16,4 +16,4 @@
 
 test-app/DB/data/*
 
-oidc_credentials
+oidc_credentials.env
