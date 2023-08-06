@@ -15,3 +15,5 @@
 # vendor/
 
 test-app/DB/data/*
+
+oidc_credentials
