@@ -1,3 +1,4 @@
+// https://github.com/zalando/gin-oauth2/blob/master/google/google.go
 package main
 
 import (
@@ -10,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"golang.org/x/oauth2"
 
 	_ "github.com/lib/pq" //なんかよくわからんけどいる　これがないとDBアクセスがruntimeErrorを吐く
 )
@@ -26,6 +28,41 @@ func insertTest() {
 	}
 }
 
+// SetConnect 接続を取得する
+// 毎回作らなくてもメモリ上のどこかに保存しておけないのか？
+func GetConfig() *oauth2.Config {
+	config := &oauth2.Config{
+		ClientID:     os.Getenv("GoogleClientID"),
+		ClientSecret: os.Getenv("googleClientSecret"),
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  os.Getenv("AuthorizeEndpoint"),
+			TokenURL: os.Getenv("TokenEndpoint"),
+		},
+		Scopes:      []string{"https://www.googleapis.com/auth/userinfo.email"},
+		RedirectURL: "http://localhost:8080/google/callback",
+	}
+
+	return config
+}
+
+func Auth(c *gin.Context) {
+	conf := GetConfig()
+	state := `hoge`
+
+	// stateをsessionなどに保存.
+
+	// リダイレクトURL作成.
+	redirectURL := conf.AuthCodeURL(state)
+
+	//ターミナルに吐くとおかしなエンコーディングになるのでエンコーディングを戻す
+	fmt.Println(redirectURL)
+
+	// redirectURLをクライアントに返す.
+	c.JSON(200, gin.H{
+		"redirectUrl": redirectURL,
+	})
+}
+
 func webServerTest() {
 
 	r := gin.Default()
@@ -40,7 +77,13 @@ func webServerTest() {
 			"message": "hello",
 		})
 	})
-	r.Run(":80")
+	r.GET("/auth", Auth)
+	r.GET("/google/callback", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "login completed",
+		})
+	})
+	r.Run(":8080")
 }
 
 func loadEnv() {
@@ -62,5 +105,5 @@ func loadEnv() {
 
 func main() {
 	loadEnv()
-	//webServerTest()
+	webServerTest()
 }
