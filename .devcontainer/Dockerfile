@@ -1,4 +1,4 @@
-FROM golang:1.20-bullseye
+FROM golang:1.20.7-bullseye
 #FROM golang:1.14-alpine
 
 # https://dev.classmethod.jp/articles/db-migrate-with-golang-migrate/
@@ -9,10 +9,9 @@ RUN apt-get update && apt-get upgrade -y\
 
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main' > /etc/apt/sources.list.d/pgdg.list\
     && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -\
-    && apt-get update\
     && apt-get install -y postgresql-client-12
 
-WORKDIR /workspaces/kasegi/src
+WORKDIR /workspaces/kasegi_backend/src
 
 RUN go install github.com/volatiletech/sqlboiler/v4@latest\
     && go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
