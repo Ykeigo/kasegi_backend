@@ -2,34 +2,19 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"os"
 
 	models "test-app/models_psql"
+	repository "test-app/repository"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/volatiletech/sqlboiler/v4/boil"
 	"golang.org/x/oauth2"
 
 	_ "github.com/lib/pq" //なんかよくわからんけどいる　これがないとDBアクセスがruntimeErrorを吐く
 )
-
-func insertTest(user models.User, db *sql.DB) {
-	// https://qiita.com/hiro9/items/e6e41ec822a7077c3568
-	err := user.Insert(context.Background(), db, boil.Infer())
-	fmt.Println(err)
-}
-
-func selectTest(db *sql.DB) {
-	// https://qiita.com/hiro9/items/e6e41ec822a7077c3568
-
-	user, e := models.FindUser(context.Background(), db, "")
-	fmt.Println(user)
-	fmt.Println(e)
-}
 
 // SetConnect 接続を取得する
 // 毎回作らなくてもメモリ上のどこかに保存しておけないのか？
@@ -67,6 +52,8 @@ func Auth(c *gin.Context) {
 }
 
 func webServerTest() {
+
+	userRepository := repository.UserRepository{}
 	
 	db, e := sql.Open(
 		"postgres",
@@ -91,20 +78,24 @@ func webServerTest() {
 	})
 	r.GET("/auth", Auth)
 	r.GET("/google/callback", func(c *gin.Context) {
+		code = c.Params.ByName("code")
+		//oauthのcodeからcredentialを取得
+		credential, err := conf.Exchange(oauth2.NoContext, code)
+
 		c.JSON(200, gin.H{
 			"message": "login completed",
 		})
 	})
 	r.GET("/insert", func(c *gin.Context) {
-		insertTest(models.User{UserName: "test"}, db)
+		userRepository.Insert(models.User{UserName: "test"}, db)
 		c.JSON(200, gin.H{
 		"message": "hello",
 		})
 	})
 	r.GET("/select", func(c *gin.Context) {
-		selectTest(db)
+		var users = userRepository.List(db)
 		c.JSON(200, gin.H{
-		"message": "hello",
+		"message": users,
 		})
 	})
 	r.Run(":8080")
