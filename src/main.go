@@ -6,8 +6,11 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
-	models "test-app/models_psql"
+	models "test-app/my_models"
+	repository "test-app/repository"
+	"test-app/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -31,6 +34,9 @@ func selectTest(db *sql.DB) {
 }
 
 func webServerTest(google *Google) {
+
+	userRepository := repository.UserRepository{}
+	loginSessionRepository := repository.LoginSessionRepository{}
 	
 	db, e := sql.Open(
 		"postgres",
@@ -67,25 +73,54 @@ func webServerTest(google *Google) {
 				"message": error.Error(),
 			})
 		} else {
-			//todo:アカウントがなければつくる
-
+			//アカウントがなければつくる
+			var isExist = userRepository.FindByGoogleUserId(userId, db) != nil
+			if !isExist {
+				userRepository.Insert(models.User{GoogleUserID: userId}, db)
+			}
 			//todo:セッションを発行する
+			var SessionToken = util.IdGenerator{}.GenerateSurrogateKey()
+			loginSessionRepository.DeleteByUserId(userId, db)
+			loginSessionRepository.Insert(models.LoginSession{UserID: userId, SessionToken: SessionToken}, db)
+			
 			c.JSON(200, gin.H{
 				"message": "login completed",
 				"userId" : userId,
+				"sessionToken" : SessionToken,
+			})
+		}
+	})
+	r.GET("/checkSession", func(c *gin.Context) {
+		var sessionToken = c.Query("sessionToken")
+		var loginSession = loginSessionRepository.FindBySessionToken(sessionToken, db)
+		fmt.Println(loginSession)
+		// 期限切れじゃないやつだけにする
+		var validLoginSession []models.LoginSession
+		for _, l := range loginSession {
+			if l.ExpiresAt.After(time.Now()) {
+				validLoginSession = append(validLoginSession, l)
+			}
+		}
+		if len(validLoginSession) > 0 {
+			c.JSON(200, gin.H{
+				"message": "session is valid",
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"message": "session is not valid",
 			})
 		}
 	})
 	r.GET("/insert", func(c *gin.Context) {
-		insertTest(models.User{UserName: "test"}, db)
+		userRepository.Insert(models.User{GoogleUserID: c.Query("googleUserId")}, db)
 		c.JSON(200, gin.H{
 		"message": "hello",
 		})
 	})
 	r.GET("/select", func(c *gin.Context) {
-		selectTest(db)
+		var users = userRepository.List(db)
 		c.JSON(200, gin.H{
-		"message": "hello",
+		"message": users,
 		})
 	})
 	r.Run(":8080")
