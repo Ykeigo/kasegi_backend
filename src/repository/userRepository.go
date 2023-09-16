@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	models "test-app/models_psql"
+	models "test-app/my_models"
 	util "test-app/util"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -36,6 +36,22 @@ func (ur UserRepository)List(db *sql.DB) []models.User {
 
 	//全部とる
 	usersSlice, e := models.Users().All(context.Background(), db)
+	fmt.Println(e)
+
+	var users []models.User
+	for _, u := range usersSlice {
+		users = append(users, *u)
+	}
+
+	return users
+}
+
+func (ur UserRepository)FindByGoogleUserId(googleUserId string, db *sql.DB) []models.User {
+	// https://qiita.com/hiro9/items/e6e41ec822a7077c3568
+
+	//全部とる
+
+	usersSlice, e := models.Users(models.UserWhere.GoogleUserID.EQ(googleUserId)).All(context.Background(), db)
 	fmt.Println(e)
 
 	var users []models.User

@@ -2,58 +2,41 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
-	models "test-app/models_psql"
+	models "test-app/my_models"
 	repository "test-app/repository"
+	"test-app/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"golang.org/x/oauth2"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 
 	_ "github.com/lib/pq" //なんかよくわからんけどいる　これがないとDBアクセスがruntimeErrorを吐く
 )
 
-// SetConnect 接続を取得する
-// 毎回作らなくてもメモリ上のどこかに保存しておけないのか？
-func GetConfig() *oauth2.Config {
-	config := &oauth2.Config{
-		ClientID:     os.Getenv("GoogleClientID"),
-		ClientSecret: os.Getenv("googleClientSecret"),
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  os.Getenv("AuthorizeEndpoint"),
-			TokenURL: os.Getenv("TokenEndpoint"),
-		},
-		Scopes:      []string{"https://www.googleapis.com/auth/userinfo.email"},
-		RedirectURL: "http://localhost:8080/google/callback",
-	}
-
-	return config
+func insertTest(user models.User, db *sql.DB) {
+	// https://qiita.com/hiro9/items/e6e41ec822a7077c3568
+	err := user.Insert(context.Background(), db, boil.Infer())
+	fmt.Println(err)
 }
 
-func Auth(c *gin.Context) {
-	conf := GetConfig()
-	state := `hoge`
+func selectTest(db *sql.DB) {
+	// https://qiita.com/hiro9/items/e6e41ec822a7077c3568
 
-	// stateをsessionなどに保存.
-
-	// リダイレクトURL作成.
-	redirectURL := conf.AuthCodeURL(state)
-
-	//ターミナルに吐くとおかしなエンコーディングになるのでエンコーディングを戻す
-	fmt.Println(redirectURL)
-
-	// redirectURLをクライアントに返す.
-	c.JSON(200, gin.H{
-		"redirectUrl": redirectURL,
-	})
+	user, e := models.FindUser(context.Background(), db, "")
+	fmt.Println(user)
+	fmt.Println(e)
 }
 
-func webServerTest() {
+func webServerTest(google *Google) {
 
 	userRepository := repository.UserRepository{}
+	loginSessionRepository := repository.LoginSessionRepository{}
 	
 	db, e := sql.Open(
 		"postgres",
@@ -76,18 +59,60 @@ func webServerTest() {
 			"message": "hello",
 		})
 	})
-	r.GET("/auth", Auth)
-	r.GET("/google/callback", func(c *gin.Context) {
-		code = c.Params.ByName("code")
-		//oauthのcodeからcredentialを取得
-		credential, err := conf.Exchange(oauth2.NoContext, code)
-
+	r.GET("/auth", func(c *gin.Context) {
+		var redirectUrl = google.GetLoginURL("state")// todo: ランダムなstateを生成する
+		fmt.Println(redirectUrl)
 		c.JSON(200, gin.H{
-			"message": "login completed",
+			"redirect-url": redirectUrl,
 		})
 	})
+	r.GET("/google/callback", func(c *gin.Context) {
+		var userId, error = google.GetUserID(c.Query("code"))
+		if error != nil {
+			c.JSON(500, gin.H{
+				"message": error.Error(),
+			})
+		} else {
+			//アカウントがなければつくる
+			var isExist = userRepository.FindByGoogleUserId(userId, db) != nil
+			if !isExist {
+				userRepository.Insert(models.User{GoogleUserID: userId}, db)
+			}
+			//todo:セッションを発行する
+			var SessionToken = util.IdGenerator{}.GenerateSurrogateKey()
+			loginSessionRepository.DeleteByUserId(userId, db)
+			loginSessionRepository.Insert(models.LoginSession{UserID: userId, SessionToken: SessionToken}, db)
+			
+			c.JSON(200, gin.H{
+				"message": "login completed",
+				"userId" : userId,
+				"sessionToken" : SessionToken,
+			})
+		}
+	})
+	r.GET("/checkSession", func(c *gin.Context) {
+		var sessionToken = c.Query("sessionToken")
+		var loginSession = loginSessionRepository.FindBySessionToken(sessionToken, db)
+		fmt.Println(loginSession)
+		// 期限切れじゃないやつだけにする
+		var validLoginSession []models.LoginSession
+		for _, l := range loginSession {
+			if l.ExpiresAt.After(time.Now()) {
+				validLoginSession = append(validLoginSession, l)
+			}
+		}
+		if len(validLoginSession) > 0 {
+			c.JSON(200, gin.H{
+				"message": "session is valid",
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"message": "session is not valid",
+			})
+		}
+	})
 	r.GET("/insert", func(c *gin.Context) {
-		userRepository.Insert(models.User{UserName: "test"}, db)
+		userRepository.Insert(models.User{GoogleUserID: c.Query("googleUserId")}, db)
 		c.JSON(200, gin.H{
 		"message": "hello",
 		})
@@ -120,5 +145,6 @@ func loadEnv() {
 
 func main() {
 	loadEnv()
-	webServerTest()
+	var google = NewGoogle()
+	webServerTest(google)
 }
