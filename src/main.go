@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/volatiletech/sqlboiler/v4/boil"
-	"golang.org/x/oauth2"
 
 	_ "github.com/lib/pq" //なんかよくわからんけどいる　これがないとDBアクセスがruntimeErrorを吐く
 )
@@ -31,42 +30,7 @@ func selectTest(db *sql.DB) {
 	fmt.Println(e)
 }
 
-// SetConnect 接続を取得する
-// 毎回作らなくてもメモリ上のどこかに保存しておけないのか？
-func GetConfig() *oauth2.Config {
-	config := &oauth2.Config{
-		ClientID:     os.Getenv("GoogleClientID"),
-		ClientSecret: os.Getenv("googleClientSecret"),
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  os.Getenv("AuthorizeEndpoint"),
-			TokenURL: os.Getenv("TokenEndpoint"),
-		},
-		Scopes:      []string{"https://www.googleapis.com/auth/userinfo.email"},
-		RedirectURL: "http://localhost:8080/google/callback",
-	}
-
-	return config
-}
-
-func Auth(c *gin.Context) {
-	conf := GetConfig()
-	state := `hoge`
-
-	// stateをsessionなどに保存.
-
-	// リダイレクトURL作成.
-	redirectURL := conf.AuthCodeURL(state)
-
-	//ターミナルに吐くとおかしなエンコーディングになるのでエンコーディングを戻す
-	fmt.Println(redirectURL)
-
-	// redirectURLをクライアントに返す.
-	c.JSON(200, gin.H{
-		"redirectUrl": redirectURL,
-	})
-}
-
-func webServerTest() {
+func webServerTest(google *Google) {
 	
 	db, e := sql.Open(
 		"postgres",
@@ -89,11 +53,28 @@ func webServerTest() {
 			"message": "hello",
 		})
 	})
-	r.GET("/auth", Auth)
-	r.GET("/google/callback", func(c *gin.Context) {
+	r.GET("/auth", func(c *gin.Context) {
+		var redirectUrl = google.GetLoginURL("state")// todo: ランダムなstateを生成する
+		fmt.Println(redirectUrl)
 		c.JSON(200, gin.H{
-			"message": "login completed",
+			"redirect-url": redirectUrl,
 		})
+	})
+	r.GET("/google/callback", func(c *gin.Context) {
+		var userId, error = google.GetUserID(c.Query("code"))
+		if error != nil {
+			c.JSON(500, gin.H{
+				"message": error.Error(),
+			})
+		} else {
+			//todo:アカウントがなければつくる
+
+			//todo:セッションを発行する
+			c.JSON(200, gin.H{
+				"message": "login completed",
+				"userId" : userId,
+			})
+		}
 	})
 	r.GET("/insert", func(c *gin.Context) {
 		insertTest(models.User{UserName: "test"}, db)
@@ -129,5 +110,6 @@ func loadEnv() {
 
 func main() {
 	loadEnv()
-	webServerTest()
+	var google = NewGoogle()
+	webServerTest(google)
 }
