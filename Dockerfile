@@ -9,9 +9,8 @@ COPY ./src .
 # ADD . .
 
 # ビルド
-RUN go build -o app main.go
-RUN go install github.com/volatiletech/sqlboiler/v4@latest
+RUN go build -o app main.go auth.go
 # 起動
 CMD ["/opt/sandbox-docker-compose-go/app"]
 
-EXPOSE 80/tcp
+EXPOSE 8080/tcp
