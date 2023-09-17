@@ -7,4 +7,4 @@ kasegi（仮）のバックエンド
 1. EC2を立ち上げる（ここまではハンズオンの資料でなんとかして）
 2. ECRにログインする
 sudo aws ecr get-login-password --region ap-northeast-1 | sudo docker login --username AWS --password-stdin 744778349286.dkr.ecr.ap-northeast-1.amazonaws.com
-3. ECRからpullする
+3. EC2にログインしてECRからpullする
