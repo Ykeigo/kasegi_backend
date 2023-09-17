@@ -23,94 +23,72 @@ import (
 
 // GameMatch is an object representing the database table.
 type GameMatch struct {
-	ID     int    `boil:"id" json:"id" toml:"id" yaml:"id"`
-	GameID int    `boil:"game_id" json:"game_id" toml:"game_id" yaml:"game_id"`
-	UserID string `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
+	ID        int       `boil:"id" json:"id" toml:"id" yaml:"id"`
+	GameID    int       `boil:"game_id" json:"game_id" toml:"game_id" yaml:"game_id"`
+	UserID    string    `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
+	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
 	R *gameMatchR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L gameMatchL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var GameMatchColumns = struct {
-	ID     string
-	GameID string
-	UserID string
+	ID        string
+	GameID    string
+	UserID    string
+	CreatedAt string
 }{
-	ID:     "id",
-	GameID: "game_id",
-	UserID: "user_id",
+	ID:        "id",
+	GameID:    "game_id",
+	UserID:    "user_id",
+	CreatedAt: "created_at",
 }
 
 var GameMatchTableColumns = struct {
-	ID     string
-	GameID string
-	UserID string
+	ID        string
+	GameID    string
+	UserID    string
+	CreatedAt string
 }{
-	ID:     "game_matches.id",
-	GameID: "game_matches.game_id",
-	UserID: "game_matches.user_id",
+	ID:        "game_matches.id",
+	GameID:    "game_matches.game_id",
+	UserID:    "game_matches.user_id",
+	CreatedAt: "game_matches.created_at",
 }
 
 // Generated where
 
-type whereHelperint struct{ field string }
+type whereHelpertime_Time struct{ field string }
 
-func (w whereHelperint) EQ(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperint) NEQ(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperint) LT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperint) LTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperint) GT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperint) GTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperint) IN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+func (w whereHelpertime_Time) EQ(x time.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.EQ, x)
 }
-func (w whereHelperint) NIN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
+func (w whereHelpertime_Time) NEQ(x time.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.NEQ, x)
 }
-
-type whereHelperstring struct{ field string }
-
-func (w whereHelperstring) EQ(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperstring) NEQ(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperstring) LT(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperstring) LTE(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperstring) GT(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperstring) GTE(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperstring) LIKE(x string) qm.QueryMod   { return qm.Where(w.field+" LIKE ?", x) }
-func (w whereHelperstring) NLIKE(x string) qm.QueryMod  { return qm.Where(w.field+" NOT LIKE ?", x) }
-func (w whereHelperstring) ILIKE(x string) qm.QueryMod  { return qm.Where(w.field+" ILIKE ?", x) }
-func (w whereHelperstring) NILIKE(x string) qm.QueryMod { return qm.Where(w.field+" NOT ILIKE ?", x) }
-func (w whereHelperstring) IN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+func (w whereHelpertime_Time) LT(x time.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
 }
-func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
+func (w whereHelpertime_Time) LTE(x time.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpertime_Time) GT(x time.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
 
 var GameMatchWhere = struct {
-	ID     whereHelperint
-	GameID whereHelperint
-	UserID whereHelperstring
+	ID        whereHelperint
+	GameID    whereHelperint
+	UserID    whereHelperstring
+	CreatedAt whereHelpertime_Time
 }{
-	ID:     whereHelperint{field: "\"game_matches\".\"id\""},
-	GameID: whereHelperint{field: "\"game_matches\".\"game_id\""},
-	UserID: whereHelperstring{field: "\"game_matches\".\"user_id\""},
+	ID:        whereHelperint{field: "\"game_matches\".\"id\""},
+	GameID:    whereHelperint{field: "\"game_matches\".\"game_id\""},
+	UserID:    whereHelperstring{field: "\"game_matches\".\"user_id\""},
+	CreatedAt: whereHelpertime_Time{field: "\"game_matches\".\"created_at\""},
 }
 
 // GameMatchRels is where relationship names are stored.
@@ -130,8 +108,8 @@ func (*gameMatchR) NewStruct() *gameMatchR {
 type gameMatchL struct{}
 
 var (
-	gameMatchAllColumns            = []string{"id", "game_id", "user_id"}
-	gameMatchColumnsWithoutDefault = []string{"game_id", "user_id"}
+	gameMatchAllColumns            = []string{"id", "game_id", "user_id", "created_at"}
+	gameMatchColumnsWithoutDefault = []string{"game_id", "user_id", "created_at"}
 	gameMatchColumnsWithDefault    = []string{"id"}
 	gameMatchPrimaryKeyColumns     = []string{"id"}
 	gameMatchGeneratedColumns      = []string{}
@@ -464,6 +442,13 @@ func (o *GameMatch) Insert(ctx context.Context, exec boil.ContextExecutor, colum
 	}
 
 	var err error
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if o.CreatedAt.IsZero() {
+			o.CreatedAt = currTime
+		}
+	}
 
 	if err := o.doBeforeInsertHooks(ctx, exec); err != nil {
 		return err
@@ -668,6 +653,13 @@ func (o GameMatchSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor
 func (o *GameMatch) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
 		return errors.New("models: no game_matches provided for upsert")
+	}
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if o.CreatedAt.IsZero() {
+			o.CreatedAt = currTime
+		}
 	}
 
 	if err := o.doBeforeUpsertHooks(ctx, exec); err != nil {

@@ -4,15 +4,17 @@
 package models
 
 var TableNames = struct {
-	GameMatches      string
-	GameTitles       string
-	LoginSessions    string
-	SchemaMigrations string
-	Users            string
+	GameMatchSelectionItems string
+	GameMatches             string
+	GameTitles              string
+	LoginSessions           string
+	SchemaMigrations        string
+	Users                   string
 }{
-	GameMatches:      "game_matches",
-	GameTitles:       "game_titles",
-	LoginSessions:    "login_sessions",
-	SchemaMigrations: "schema_migrations",
-	Users:            "users",
+	GameMatchSelectionItems: "game_match_selection_items",
+	GameMatches:             "game_matches",
+	GameTitles:              "game_titles",
+	LoginSessions:           "login_sessions",
+	SchemaMigrations:        "schema_migrations",
+	Users:                   "users",
 }
