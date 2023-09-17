@@ -17,3 +17,6 @@
 test-app/DB/data/*
 
 oidc_credentials
+
+*.pem
+oidc_credentials.env
