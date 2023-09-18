@@ -12,21 +12,21 @@ CREATE TABLE IF NOT EXISTS login_sessions(
 
 
 CREATE TABLE IF NOT EXISTS game_titles(
-    id serial PRIMARY KEY,
+    id VARCHAR (64) PRIMARY KEY,
     title VARCHAR (64) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS game_matches(
-    id serial PRIMARY KEY,
-    game_id int NOT NULL,
+    id VARCHAR (64) PRIMARY KEY,
+    game_id VARCHAR (64) NOT NULL,
     user_id VARCHAR (64) NOT NULL,
     created_at TIMESTAMP NOT NULL
 );
 create index on game_matches(game_id, user_id);
 
 CREATE TABLE IF NOT EXISTS game_match_selection_items(
-    id serial PRIMARY KEY,
-    match_id int NOT NULL,
+    id VARCHAR (64) PRIMARY KEY,
+    match_id VARCHAR (64) NOT NULL,
     title VARCHAR (64) NOT NULL,
-    checked BOOLEAN NOT NULL
+    is_checked BOOLEAN NOT NULL
 );

@@ -23,8 +23,8 @@ import (
 
 // GameMatch is an object representing the database table.
 type GameMatch struct {
-	ID        int       `boil:"id" json:"id" toml:"id" yaml:"id"`
-	GameID    int       `boil:"game_id" json:"game_id" toml:"game_id" yaml:"game_id"`
+	ID        string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	GameID    string    `boil:"game_id" json:"game_id" toml:"game_id" yaml:"game_id"`
 	UserID    string    `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
@@ -80,13 +80,13 @@ func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
 }
 
 var GameMatchWhere = struct {
-	ID        whereHelperint
-	GameID    whereHelperint
+	ID        whereHelperstring
+	GameID    whereHelperstring
 	UserID    whereHelperstring
 	CreatedAt whereHelpertime_Time
 }{
-	ID:        whereHelperint{field: "\"game_matches\".\"id\""},
-	GameID:    whereHelperint{field: "\"game_matches\".\"game_id\""},
+	ID:        whereHelperstring{field: "\"game_matches\".\"id\""},
+	GameID:    whereHelperstring{field: "\"game_matches\".\"game_id\""},
 	UserID:    whereHelperstring{field: "\"game_matches\".\"user_id\""},
 	CreatedAt: whereHelpertime_Time{field: "\"game_matches\".\"created_at\""},
 }
@@ -109,8 +109,8 @@ type gameMatchL struct{}
 
 var (
 	gameMatchAllColumns            = []string{"id", "game_id", "user_id", "created_at"}
-	gameMatchColumnsWithoutDefault = []string{"game_id", "user_id", "created_at"}
-	gameMatchColumnsWithDefault    = []string{"id"}
+	gameMatchColumnsWithoutDefault = []string{"id", "game_id", "user_id", "created_at"}
+	gameMatchColumnsWithDefault    = []string{}
 	gameMatchPrimaryKeyColumns     = []string{"id"}
 	gameMatchGeneratedColumns      = []string{}
 )
@@ -406,7 +406,7 @@ func GameMatches(mods ...qm.QueryMod) gameMatchQuery {
 
 // FindGameMatch retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindGameMatch(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*GameMatch, error) {
+func FindGameMatch(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*GameMatch, error) {
 	gameMatchObj := &GameMatch{}
 
 	sel := "*"
@@ -919,7 +919,7 @@ func (o *GameMatchSlice) ReloadAll(ctx context.Context, exec boil.ContextExecuto
 }
 
 // GameMatchExists checks if the GameMatch row exists.
-func GameMatchExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
+func GameMatchExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"game_matches\" where \"id\"=$1 limit 1)"
 

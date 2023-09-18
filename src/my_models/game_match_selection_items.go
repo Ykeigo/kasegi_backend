@@ -23,63 +23,40 @@ import (
 
 // GameMatchSelectionItem is an object representing the database table.
 type GameMatchSelectionItem struct {
-	ID      int    `boil:"id" json:"id" toml:"id" yaml:"id"`
-	MatchID int    `boil:"match_id" json:"match_id" toml:"match_id" yaml:"match_id"`
-	Title   string `boil:"title" json:"title" toml:"title" yaml:"title"`
-	Checked bool   `boil:"checked" json:"checked" toml:"checked" yaml:"checked"`
+	ID        string `boil:"id" json:"id" toml:"id" yaml:"id"`
+	MatchID   string `boil:"match_id" json:"match_id" toml:"match_id" yaml:"match_id"`
+	Title     string `boil:"title" json:"title" toml:"title" yaml:"title"`
+	IsChecked bool   `boil:"is_checked" json:"is_checked" toml:"is_checked" yaml:"is_checked"`
 
 	R *gameMatchSelectionItemR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L gameMatchSelectionItemL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var GameMatchSelectionItemColumns = struct {
-	ID      string
-	MatchID string
-	Title   string
-	Checked string
+	ID        string
+	MatchID   string
+	Title     string
+	IsChecked string
 }{
-	ID:      "id",
-	MatchID: "match_id",
-	Title:   "title",
-	Checked: "checked",
+	ID:        "id",
+	MatchID:   "match_id",
+	Title:     "title",
+	IsChecked: "is_checked",
 }
 
 var GameMatchSelectionItemTableColumns = struct {
-	ID      string
-	MatchID string
-	Title   string
-	Checked string
+	ID        string
+	MatchID   string
+	Title     string
+	IsChecked string
 }{
-	ID:      "game_match_selection_items.id",
-	MatchID: "game_match_selection_items.match_id",
-	Title:   "game_match_selection_items.title",
-	Checked: "game_match_selection_items.checked",
+	ID:        "game_match_selection_items.id",
+	MatchID:   "game_match_selection_items.match_id",
+	Title:     "game_match_selection_items.title",
+	IsChecked: "game_match_selection_items.is_checked",
 }
 
 // Generated where
-
-type whereHelperint struct{ field string }
-
-func (w whereHelperint) EQ(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperint) NEQ(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperint) LT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperint) LTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperint) GT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperint) GTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperint) IN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelperint) NIN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
 
 type whereHelperstring struct{ field string }
 
@@ -118,15 +95,15 @@ func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field
 func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
 
 var GameMatchSelectionItemWhere = struct {
-	ID      whereHelperint
-	MatchID whereHelperint
-	Title   whereHelperstring
-	Checked whereHelperbool
+	ID        whereHelperstring
+	MatchID   whereHelperstring
+	Title     whereHelperstring
+	IsChecked whereHelperbool
 }{
-	ID:      whereHelperint{field: "\"game_match_selection_items\".\"id\""},
-	MatchID: whereHelperint{field: "\"game_match_selection_items\".\"match_id\""},
-	Title:   whereHelperstring{field: "\"game_match_selection_items\".\"title\""},
-	Checked: whereHelperbool{field: "\"game_match_selection_items\".\"checked\""},
+	ID:        whereHelperstring{field: "\"game_match_selection_items\".\"id\""},
+	MatchID:   whereHelperstring{field: "\"game_match_selection_items\".\"match_id\""},
+	Title:     whereHelperstring{field: "\"game_match_selection_items\".\"title\""},
+	IsChecked: whereHelperbool{field: "\"game_match_selection_items\".\"is_checked\""},
 }
 
 // GameMatchSelectionItemRels is where relationship names are stored.
@@ -146,9 +123,9 @@ func (*gameMatchSelectionItemR) NewStruct() *gameMatchSelectionItemR {
 type gameMatchSelectionItemL struct{}
 
 var (
-	gameMatchSelectionItemAllColumns            = []string{"id", "match_id", "title", "checked"}
-	gameMatchSelectionItemColumnsWithoutDefault = []string{"match_id", "title", "checked"}
-	gameMatchSelectionItemColumnsWithDefault    = []string{"id"}
+	gameMatchSelectionItemAllColumns            = []string{"id", "match_id", "title", "is_checked"}
+	gameMatchSelectionItemColumnsWithoutDefault = []string{"id", "match_id", "title", "is_checked"}
+	gameMatchSelectionItemColumnsWithDefault    = []string{}
 	gameMatchSelectionItemPrimaryKeyColumns     = []string{"id"}
 	gameMatchSelectionItemGeneratedColumns      = []string{}
 )
@@ -444,7 +421,7 @@ func GameMatchSelectionItems(mods ...qm.QueryMod) gameMatchSelectionItemQuery {
 
 // FindGameMatchSelectionItem retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindGameMatchSelectionItem(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*GameMatchSelectionItem, error) {
+func FindGameMatchSelectionItem(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*GameMatchSelectionItem, error) {
 	gameMatchSelectionItemObj := &GameMatchSelectionItem{}
 
 	sel := "*"
@@ -943,7 +920,7 @@ func (o *GameMatchSelectionItemSlice) ReloadAll(ctx context.Context, exec boil.C
 }
 
 // GameMatchSelectionItemExists checks if the GameMatchSelectionItem row exists.
-func GameMatchSelectionItemExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
+func GameMatchSelectionItemExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"game_match_selection_items\" where \"id\"=$1 limit 1)"
 

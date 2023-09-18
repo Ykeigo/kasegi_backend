@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
@@ -37,6 +38,7 @@ func webServerTest(google *Google) {
 
 	userRepository := repository.UserRepository{}
 	loginSessionRepository := repository.LoginSessionRepository{}
+	gameMatchRepository := repository.GameMatchRepository{}
 	
 	db, e := sql.Open(
 		"postgres",
@@ -110,17 +112,50 @@ func webServerTest(google *Google) {
 				"message": "session is not valid",
 			})
 		}
-	})
+	})/*
 	r.GET("/insert", func(c *gin.Context) {
 		userRepository.Insert(models.User{GoogleUserID: c.Query("googleUserId")}, db)
 		c.JSON(200, gin.H{
 		"message": "hello",
 		})
-	})
-	r.GET("/select", func(c *gin.Context) {
+	})*/
+	r.GET("/listUser", func(c *gin.Context) {
 		var users = userRepository.List(db)
 		c.JSON(200, gin.H{
 		"message": users,
+		})
+	})
+	//IDとcreatedAtは無視する
+	r.POST("/createGameMatch", func(c *gin.Context) {
+		/*
+		body, err := io.ReadAll(c.Request.Body)
+		if err != nil {
+			println("エラー")
+		}
+		println(string(body))
+		*/
+		var json repository.GameMatch
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		println(json.UserId)
+		/*
+		var checkItems []repository.CheckItem
+		
+		checkItems = append(checkItems, repository.CheckItem{Title: "test1", IsChecked: false})
+		checkItems = append(checkItems, repository.CheckItem{Title: "test2", IsChecked: false})
+
+		var gameMatch = gameMatchRepository.Get(db)
+		*/
+		c.JSON(200, gin.H{
+		"message": json,
+		})
+	})	
+	r.GET("/getGameMatch", func(c *gin.Context) {
+		var gameMatches = gameMatchRepository.List(db)
+		c.JSON(200, gin.H{
+		"message": gameMatches,
 		})
 	})
 	r.Run(":8080")

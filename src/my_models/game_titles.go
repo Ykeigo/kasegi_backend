@@ -23,7 +23,7 @@ import (
 
 // GameTitle is an object representing the database table.
 type GameTitle struct {
-	ID    int    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	ID    string `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Title string `boil:"title" json:"title" toml:"title" yaml:"title"`
 
 	R *gameTitleR `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -49,10 +49,10 @@ var GameTitleTableColumns = struct {
 // Generated where
 
 var GameTitleWhere = struct {
-	ID    whereHelperint
+	ID    whereHelperstring
 	Title whereHelperstring
 }{
-	ID:    whereHelperint{field: "\"game_titles\".\"id\""},
+	ID:    whereHelperstring{field: "\"game_titles\".\"id\""},
 	Title: whereHelperstring{field: "\"game_titles\".\"title\""},
 }
 
@@ -74,8 +74,8 @@ type gameTitleL struct{}
 
 var (
 	gameTitleAllColumns            = []string{"id", "title"}
-	gameTitleColumnsWithoutDefault = []string{"title"}
-	gameTitleColumnsWithDefault    = []string{"id"}
+	gameTitleColumnsWithoutDefault = []string{"id", "title"}
+	gameTitleColumnsWithDefault    = []string{}
 	gameTitlePrimaryKeyColumns     = []string{"id"}
 	gameTitleGeneratedColumns      = []string{}
 )
@@ -371,7 +371,7 @@ func GameTitles(mods ...qm.QueryMod) gameTitleQuery {
 
 // FindGameTitle retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindGameTitle(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*GameTitle, error) {
+func FindGameTitle(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*GameTitle, error) {
 	gameTitleObj := &GameTitle{}
 
 	sel := "*"
@@ -870,7 +870,7 @@ func (o *GameTitleSlice) ReloadAll(ctx context.Context, exec boil.ContextExecuto
 }
 
 // GameTitleExists checks if the GameTitle row exists.
-func GameTitleExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
+func GameTitleExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"game_titles\" where \"id\"=$1 limit 1)"
 
