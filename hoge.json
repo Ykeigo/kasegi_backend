@@ -1,0 +1,40 @@
+{
+    "gameMatches": [
+        {
+            "Id": "YfQOhHefXH",
+            "GameId": "hoge",
+            "UserId": "108440106503048341616",
+            "CheckItems": [
+                {
+                    "Title": "hoge",
+                    "IsChecked": true
+                }
+            ],
+            "CreatedAt": "2023-09-18T07:38:49.369293Z"
+        },
+        {
+            "Id": "blbltBun6n",
+            "GameId": "hoge",
+            "UserId": "108440106503048341616",
+            "CheckItems": [
+                {
+                    "Title": "hoge",
+                    "IsChecked": true
+                }
+            ],
+            "CreatedAt": "2023-09-18T07:39:18.641915Z"
+        },
+        {
+            "Id": "JY2as91Glc",
+            "GameId": "hoge",
+            "UserId": "108440106503048341616",
+            "CheckItems": [
+                {
+                    "Title": "hoge",
+                    "IsChecked": true
+                }
+            ],
+            "CreatedAt": "2023-09-18T07:39:19.48032Z"
+        }
+    ]
+}

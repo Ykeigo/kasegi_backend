@@ -38,8 +38,7 @@ func webServerTest(google *Google) {
 
 	userRepository := repository.UserRepository{}
 	loginSessionRepository := repository.LoginSessionRepository{}
-	gameMatchRepository := repository.GameMatchRepository{}
-	gameMatchCrudApi := api.GameMatchCrudApi{}
+	gameMatchApi := api.GameMatchApi{}
 	
 	db, e := sql.Open(
 		"postgres",
@@ -126,15 +125,11 @@ func webServerTest(google *Google) {
 		"message": users,
 		})
 	})
-	//IDとcreatedAtは無視する
-	r.POST("/createGameMatch", func(c *gin.Context) {
-		gameMatchCrudApi.CreateGameMatch(c, db)
+	r.POST("/createMyGameMatch", func(c *gin.Context) {
+		gameMatchApi.CreateMyGameMatch(c, db)
 	})	
-	r.GET("/getGameMatch", func(c *gin.Context) {
-		var gameMatches = gameMatchRepository.List(db)
-		c.JSON(200, gin.H{
-		"message": gameMatches,
-		})
+	r.POST("/listMyGameMatch", func(c *gin.Context) {
+		gameMatchApi.ListMyGameMatch(c, db)
 	})
 	r.Run(":8080")
 }
