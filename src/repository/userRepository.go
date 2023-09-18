@@ -46,12 +46,12 @@ func (ur UserRepository)List(db *sql.DB) []models.User {
 	return users
 }
 
-func (ur UserRepository)FindByGoogleUserId(googleUserId string, db *sql.DB) []models.User {
+func (ur UserRepository)FindByEmail(email string, db *sql.DB) []models.User {
 	// https://qiita.com/hiro9/items/e6e41ec822a7077c3568
 
 	//全部とる
 
-	usersSlice, e := models.Users(models.UserWhere.GoogleUserID.EQ(googleUserId)).All(context.Background(), db)
+	usersSlice, e := models.Users(models.UserWhere.Email.EQ(email)).All(context.Background(), db)
 	fmt.Println(e)
 
 	var users []models.User

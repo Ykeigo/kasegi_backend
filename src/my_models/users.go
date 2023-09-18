@@ -23,37 +23,37 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	ID           string `boil:"id" json:"id" toml:"id" yaml:"id"`
-	GoogleUserID string `boil:"google_user_id" json:"google_user_id" toml:"google_user_id" yaml:"google_user_id"`
+	ID    string `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Email string `boil:"email" json:"email" toml:"email" yaml:"email"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var UserColumns = struct {
-	ID           string
-	GoogleUserID string
+	ID    string
+	Email string
 }{
-	ID:           "id",
-	GoogleUserID: "google_user_id",
+	ID:    "id",
+	Email: "email",
 }
 
 var UserTableColumns = struct {
-	ID           string
-	GoogleUserID string
+	ID    string
+	Email string
 }{
-	ID:           "users.id",
-	GoogleUserID: "users.google_user_id",
+	ID:    "users.id",
+	Email: "users.email",
 }
 
 // Generated where
 
 var UserWhere = struct {
-	ID           whereHelperstring
-	GoogleUserID whereHelperstring
+	ID    whereHelperstring
+	Email whereHelperstring
 }{
-	ID:           whereHelperstring{field: "\"users\".\"id\""},
-	GoogleUserID: whereHelperstring{field: "\"users\".\"google_user_id\""},
+	ID:    whereHelperstring{field: "\"users\".\"id\""},
+	Email: whereHelperstring{field: "\"users\".\"email\""},
 }
 
 // UserRels is where relationship names are stored.
@@ -73,8 +73,8 @@ func (*userR) NewStruct() *userR {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "google_user_id"}
-	userColumnsWithoutDefault = []string{"id", "google_user_id"}
+	userAllColumns            = []string{"id", "email"}
+	userColumnsWithoutDefault = []string{"id", "email"}
 	userColumnsWithDefault    = []string{}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}

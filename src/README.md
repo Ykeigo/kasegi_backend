@@ -21,3 +21,6 @@ DB切り替え
 
 DB作成（多分他操作もだいたい同じ、小文字で書かないと動かない）
 create database {DB名};
+
+ORM生成
+sqlboiler psql

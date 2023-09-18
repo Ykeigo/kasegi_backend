@@ -39,7 +39,7 @@ func (g *Google) GetLoginURL(state string) (clientID string) {
 	return g.Config.AuthCodeURL(state)
 }
 
-func (g *Google) GetUserID(code string) (googleUserID string, err error) {
+func (g *Google) VerifyAndGetEmail(code string) (googleUserID string, err error) {
 
 	cxt := context.Background()
 
@@ -61,5 +61,5 @@ func (g *Google) GetUserID(code string) (googleUserID string, err error) {
 		return "", errors.New("接続エラー" + err.Error())
 	}
 
-	return userInfo.UserId, nil
+	return userInfo.Email, nil
 }

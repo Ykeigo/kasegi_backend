@@ -69,25 +69,26 @@ func webServerTest(google *Google) {
 		})
 	})
 	r.GET("/google/callback", func(c *gin.Context) {
-		var userId, error = google.GetUserID(c.Query("code"))
+		var email, error = google.VerifyAndGetEmail(c.Query("code"))
 		if error != nil {
 			c.JSON(500, gin.H{
 				"message": error.Error(),
 			})
 		} else {
 			//アカウントがなければつくる
-			var isExist = userRepository.FindByGoogleUserId(userId, db) != nil
-			if !isExist {
-				userRepository.Insert(models.User{GoogleUserID: userId}, db)
+			var existUser = userRepository.FindByEmail(email, db)
+			if existUser == nil {
+				userRepository.Insert(models.User{Email: email}, db)
+				existUser = userRepository.FindByEmail(email, db)
 			}
 			//todo:セッションを発行する
 			var SessionToken = util.IdGenerator{}.GenerateSurrogateKey()
-			loginSessionRepository.DeleteByUserId(userId, db)
-			loginSessionRepository.Insert(models.LoginSession{UserID: userId, SessionToken: SessionToken}, db)
+			loginSessionRepository.DeleteByUserId(existUser[0].ID, db)
+			loginSessionRepository.Insert(models.LoginSession{UserID: existUser[0].ID, SessionToken: SessionToken}, db)
 			
 			c.JSON(200, gin.H{
 				"message": "login completed",
-				"userId" : userId,
+				"email" : email,
 				"sessionToken" : SessionToken,
 			})
 		}
