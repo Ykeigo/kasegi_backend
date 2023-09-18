@@ -8,9 +8,10 @@ import (
 	"os"
 	"time"
 
-	models "test-app/my_models"
-	repository "test-app/repository"
-	"test-app/util"
+	api "kasegi/api"
+	models "kasegi/my_models"
+	repository "kasegi/repository"
+	"kasegi/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -37,10 +38,11 @@ func webServerTest(google *Google) {
 
 	userRepository := repository.UserRepository{}
 	loginSessionRepository := repository.LoginSessionRepository{}
+	gameMatchApi := api.GameMatchApi{}
 	
 	db, e := sql.Open(
 		"postgres",
-		"host=localhost port=5432 dbname=example user=postgres password=password sslmode=disable")
+		"host=localhost port=5432 dbname=kasegi user=postgres password=password sslmode=disable")
 	if e != nil {
 		fmt.Println(e)
 		return
@@ -110,18 +112,24 @@ func webServerTest(google *Google) {
 				"message": "session is not valid",
 			})
 		}
-	})
+	})/*
 	r.GET("/insert", func(c *gin.Context) {
 		userRepository.Insert(models.User{GoogleUserID: c.Query("googleUserId")}, db)
 		c.JSON(200, gin.H{
 		"message": "hello",
 		})
-	})
-	r.GET("/select", func(c *gin.Context) {
+	})*/
+	r.GET("/listUser", func(c *gin.Context) {
 		var users = userRepository.List(db)
 		c.JSON(200, gin.H{
 		"message": users,
 		})
+	})
+	r.POST("/createMyGameMatch", func(c *gin.Context) {
+		gameMatchApi.CreateMyGameMatch(c, db)
+	})	
+	r.POST("/listMyGameMatch", func(c *gin.Context) {
+		gameMatchApi.ListMyGameMatch(c, db)
 	})
 	r.Run(":8080")
 }

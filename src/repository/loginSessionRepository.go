@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	models "test-app/my_models"
-	util "test-app/util"
+	models "kasegi/my_models"
+	util "kasegi/util"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 

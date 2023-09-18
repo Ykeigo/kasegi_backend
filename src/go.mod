@@ -1,4 +1,4 @@
-module test-app
+module kasegi
 
 go 1.20
 
