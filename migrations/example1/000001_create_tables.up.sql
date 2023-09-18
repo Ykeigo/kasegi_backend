@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users(
     id VARCHAR (64) PRIMARY KEY,
-    google_user_id VARCHAR (256) NOT NULL
+    email VARCHAR (256) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS login_sessions(
