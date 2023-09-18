@@ -1,7 +1,8 @@
 postgleSQLのパスをexportしておく
 postgressqlのURL（？）はこうらしい
 一番最初のpostgres://っていうのはどういうこと？httpとかじゃなくてpostgres形式で通信します的なこと？
-export POSTGRESQL_URL='postgres://postgres:password@localhost:5432/${DB名}?sslmode=disable'
+kasegiはDB名
+export POSTGRESQL_URL='postgres://postgres:password@localhost:5432/kasegi?sslmode=disable'
 
 バージョンアップ
 migrate -database $POSTGRESQL_URL -path example1 up ${上げるバージョン数（指定しない場合全部）}

@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	models "test-app/my_models"
+	models "kasegi/my_models"
+	util "kasegi/util"
 
 	_ "github.com/lib/pq" //なんかよくわからんけどいる　これがないとDBアクセスがruntimeErrorを吐く
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -32,18 +33,20 @@ type GameMatch struct {
 func (ur GameMatchRepository)Insert(gameMatch GameMatch, db *sql.DB) {
 	// https://qiita.com/hiro9/items/e6e41ec822a7077c3568
 	var gameMatchDbModel = models.GameMatch{
-		ID: gameMatch.Id,
+		ID: util.IdGenerator{}.GenerateSurrogateKey(),
 		GameID: gameMatch.GameId,
 		UserID: gameMatch.UserId,
-		CreatedAt: gameMatch.CreatedAt,
+		CreatedAt: time.Now(),
 	}
-	var gameMatchCheckItemDbModels []*models.GameMatchSelectionItem
+
 	for _, checkItem := range gameMatch.CheckItems {
 		var gameMatchCheckItemDbModel = models.GameMatchSelectionItem{
+			ID: util.IdGenerator{}.GenerateSurrogateKey(),
+			MatchID: gameMatchDbModel.ID,
 			Title: checkItem.Title,
 			IsChecked: checkItem.IsChecked,
 		}
-		gameMatchCheckItemDbModels = append(gameMatchCheckItemDbModels, &gameMatchCheckItemDbModel)
+		gameMatchCheckItemDbModel.Insert(context.Background(), db, boil.Infer())
 	}
 	gameMatchDbModel.Insert(context.Background(), db, boil.Infer())
 }

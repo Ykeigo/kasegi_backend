@@ -5,13 +5,13 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"net/http"
 	"os"
 	"time"
 
-	models "test-app/my_models"
-	repository "test-app/repository"
-	"test-app/util"
+	api "kasegi/api"
+	models "kasegi/my_models"
+	repository "kasegi/repository"
+	"kasegi/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -39,10 +39,11 @@ func webServerTest(google *Google) {
 	userRepository := repository.UserRepository{}
 	loginSessionRepository := repository.LoginSessionRepository{}
 	gameMatchRepository := repository.GameMatchRepository{}
+	gameMatchCrudApi := api.GameMatchCrudApi{}
 	
 	db, e := sql.Open(
 		"postgres",
-		"host=localhost port=5432 dbname=example user=postgres password=password sslmode=disable")
+		"host=localhost port=5432 dbname=kasegi user=postgres password=password sslmode=disable")
 	if e != nil {
 		fmt.Println(e)
 		return
@@ -127,30 +128,7 @@ func webServerTest(google *Google) {
 	})
 	//IDとcreatedAtは無視する
 	r.POST("/createGameMatch", func(c *gin.Context) {
-		/*
-		body, err := io.ReadAll(c.Request.Body)
-		if err != nil {
-			println("エラー")
-		}
-		println(string(body))
-		*/
-		var json repository.GameMatch
-		if err := c.ShouldBindJSON(&json); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		println(json.UserId)
-		/*
-		var checkItems []repository.CheckItem
-		
-		checkItems = append(checkItems, repository.CheckItem{Title: "test1", IsChecked: false})
-		checkItems = append(checkItems, repository.CheckItem{Title: "test2", IsChecked: false})
-
-		var gameMatch = gameMatchRepository.Get(db)
-		*/
-		c.JSON(200, gin.H{
-		"message": json,
-		})
+		gameMatchCrudApi.CreateGameMatch(c, db)
 	})	
 	r.GET("/getGameMatch", func(c *gin.Context) {
 		var gameMatches = gameMatchRepository.List(db)
