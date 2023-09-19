@@ -57,8 +57,11 @@ func webServerTest(google *Google) {
 	r.Use(cors.New(cors.Config{
 		// アクセスを許可したいアクセス元
 		AllowOrigins: []string{
-			"*//localhost",
-			"https://real-exp-kasegi.com",
+			"http://localhost:3000",
+			"https://localhost:3000",
+			"http://localhost:3000/",
+			"https://localhost:3000/",
+			"https://real-exp-kasegi.com/*",
 		},
 		// アクセスを許可したいHTTPメソッド(以下の例だとPUTやDELETEはアクセスできません)
 		AllowMethods: []string{
