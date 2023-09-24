@@ -40,7 +40,7 @@ func (ur GameMatchRepository)Insert(gameMatch GameMatch, db *sql.DB) {
 	}
 
 	for _, checkItem := range gameMatch.CheckItems {
-		var gameMatchCheckItemDbModel = models.GameMatchSelectionItem{
+		var gameMatchCheckItemDbModel = models.GameMatchChecklistItem{
 			ID: util.IdGenerator{}.GenerateSurrogateKey(),
 			MatchID: gameMatchDbModel.ID,
 			Title: checkItem.Title,
@@ -51,7 +51,7 @@ func (ur GameMatchRepository)Insert(gameMatch GameMatch, db *sql.DB) {
 	gameMatchDbModel.Insert(context.Background(), db, boil.Infer())
 }
 
-func convertGameMatchDbModelToGameMatch(gameMatchDbModel models.GameMatch, gameMatchCheckItemDbModels []*models.GameMatchSelectionItem) GameMatch {
+func convertGameMatchDbModelToGameMatch(gameMatchDbModel models.GameMatch, gameMatchCheckItemDbModels []*models.GameMatchChecklistItem) GameMatch {
 	var checkItems []CheckItem
 	for _, gameMatchCheckItemDbModel := range gameMatchCheckItemDbModels {
 		var checkItem = CheckItem{
@@ -76,7 +76,7 @@ func (ur GameMatchRepository)Get(id string, db *sql.DB) GameMatch {
 	gameMatch, e1 := models.FindGameMatch(context.Background(), db, id)
 	fmt.Println(e1)
 
-	gameMatchSelectionItems, e2 := models.GameMatchSelectionItems(models.GameMatchSelectionItemWhere.MatchID.EQ(gameMatch.ID)).All(context.Background(), db)
+	gameMatchSelectionItems, e2 := models.GameMatchChecklistItems(models.GameMatchChecklistItemWhere.MatchID.EQ(gameMatch.ID)).All(context.Background(), db)
 	fmt.Println(e2)
 
 	return convertGameMatchDbModelToGameMatch(*gameMatch, gameMatchSelectionItems)
@@ -86,12 +86,12 @@ func (ur GameMatchRepository)List(db *sql.DB) []GameMatch {
 	gameMatchDbModels, e1 := models.GameMatches().All(context.Background(), db)
 	fmt.Println(e1)
 
-	gameMatchSelectionItemsDbModels, e2 := models.GameMatchSelectionItems().All(context.Background(), db)
+	gameMatchSelectionItemsDbModels, e2 := models.GameMatchChecklistItems().All(context.Background(), db)
 	fmt.Println(e2)
 
 	var gameMatchs []GameMatch
 	for _, gameMatch := range gameMatchDbModels {
-		var filterdItems []*models.GameMatchSelectionItem
+		var filterdItems []*models.GameMatchChecklistItem
 		for _, gameMatchSelectionItem := range gameMatchSelectionItemsDbModels {
 			if gameMatchSelectionItem.MatchID == gameMatch.ID {
 				filterdItems = append(filterdItems, gameMatchSelectionItem)
@@ -113,13 +113,13 @@ func (ur GameMatchRepository)FindByUserId(userId string, db *sql.DB) []GameMatch
 	gameMatchesSlice, e := models.GameMatches(models.GameMatchWhere.UserID.EQ(userId)).All(context.Background(), db)
 	fmt.Println(e)
 	
-	gameMatchSelectionItemsDbModels, e2 := models.GameMatchSelectionItems().All(context.Background(), db)
+	gameMatchSelectionItemsDbModels, e2 := models.GameMatchChecklistItems().All(context.Background(), db)
 	fmt.Println(e2)
 
 	
 	var gameMatchs []GameMatch
 	for _, gameMatch := range gameMatchesSlice {
-		var filterdItems []*models.GameMatchSelectionItem
+		var filterdItems []*models.GameMatchChecklistItem
 		for _, gameMatchSelectionItem := range gameMatchSelectionItemsDbModels {
 			if gameMatchSelectionItem.MatchID == gameMatch.ID {
 				filterdItems = append(filterdItems, gameMatchSelectionItem)
