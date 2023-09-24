@@ -4,14 +4,18 @@
 package models
 
 var TableNames = struct {
-	GameMatchSelectionItems string
+	ChecklistTemplateItems  string
+	ChecklistTemplates      string
+	GameMatchChecklistItems string
 	GameMatches             string
 	GameTitles              string
 	LoginSessions           string
 	SchemaMigrations        string
 	Users                   string
 }{
-	GameMatchSelectionItems: "game_match_selection_items",
+	ChecklistTemplateItems:  "checklist_template_items",
+	ChecklistTemplates:      "checklist_templates",
+	GameMatchChecklistItems: "game_match_checklist_items",
 	GameMatches:             "game_matches",
 	GameTitles:              "game_titles",
 	LoginSessions:           "login_sessions",

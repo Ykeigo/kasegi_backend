@@ -40,6 +40,7 @@ func webServerTest(google *Google) {
 	userRepository := repository.UserRepository{}
 	loginSessionRepository := repository.LoginSessionRepository{}
 	gameMatchApi := api.GameMatchApi{}
+	checklistTemplateApi := api.ChecklistTemplateApi{}
 	
 	db, e := sql.Open(
 		"postgres",
@@ -166,6 +167,12 @@ func webServerTest(google *Google) {
 	})	
 	r.POST("/listMyGameMatch", func(c *gin.Context) {
 		gameMatchApi.ListMyGameMatch(c, db)
+	})
+	r.POST("/createMyChecklistTemplate", func(c *gin.Context) {
+		checklistTemplateApi.CreateMyChecklistTempalte(c, db)
+	})	
+	r.POST("/listMyChecklistTemplate", func(c *gin.Context) {
+		checklistTemplateApi.ListMyChecklistTemplate(c, db)
 	})
 	r.Run(":8080")
 }

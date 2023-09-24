@@ -24,9 +24,22 @@ CREATE TABLE IF NOT EXISTS game_matches(
 );
 create index on game_matches(game_id, user_id);
 
-CREATE TABLE IF NOT EXISTS game_match_selection_items(
+CREATE TABLE IF NOT EXISTS game_match_checklist_items(
     id VARCHAR (64) PRIMARY KEY,
     match_id VARCHAR (64) NOT NULL,
+    title VARCHAR (64) NOT NULL,
+    is_checked BOOLEAN NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS checklist_templates(
+    id VARCHAR (64) PRIMARY KEY,
+    game_title_id VARCHAR (64) NOT NULL,
+    created_by_user_id VARCHAR (64) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS checklist_template_items(
+    id VARCHAR (64) PRIMARY KEY,
+    checklist_template_id VARCHAR (64) NOT NULL,
     title VARCHAR (64) NOT NULL,
     is_checked BOOLEAN NOT NULL
 );
