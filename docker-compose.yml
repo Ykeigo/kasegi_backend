@@ -3,13 +3,18 @@ services:
   # service名
   app:
     # イメージ名
-    image: tips-share
-    # コンテナ名
-    container_name: sandbox-docker-compose
+    image: kasegi-backend
+    environment:
+      - ENV=stg
+      - GoogleClientID=$GoogleClientID
+      - googleClientSecret=$googleClientSecret
+      - TokenEndpoint=$TokenEndpoint
+      - AuthorizeEndpoint=$AuthorizeEndpoint
+      - dbServerUrl=$dbServerUrl
+      - dbServerPort=$dbServerPort
+      - dbServerUserId=$dbServerUserId
+      - dbServerPs=$dbServerPs
     # ビルドに使用するDockerfileがあるディレクトリ指定
     build: .
-    # マウントディレクトリ指定
-    volumes:
-      - .:/go/src/github.com/taisa831/sandbox-docker-compose-go
     ports:
-      - "80:80"
+      - "80:8080"
