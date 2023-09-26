@@ -4,6 +4,8 @@ FROM golang:1.20-bullseye
 # コンテナログイン時のディレクトリ指定
 WORKDIR /opt/sandbox-docker-compose-go
 
+ENV ENV=stg
+
 # ホストのファイルをコンテナの作業ディレクトリにコピー
 COPY ./src .
 # ADD . .

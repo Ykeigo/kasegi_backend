@@ -42,9 +42,22 @@ func webServerTest(google *Google) {
 	gameMatchApi := api.GameMatchApi{}
 	checklistTemplateApi := api.ChecklistTemplateApi{}
 	
+	var dbAccessString= "host=localhost port=5432 dbname=kasegi user=postgres password=password sslmode=disable"
+	
+	if(os.Getenv("ENV") == "stg") {
+		dbAccessString = "host="+os.Getenv("dbServerUrl") +
+		" port=" + os.Getenv("dbServerPort")+
+		" dbname=kasegi"+
+		" user="+os.Getenv("dbServerUserId") +
+		"password=" +os.Getenv("dbServerPs")+
+		" sslmode=disable"
+	}
+	fmt.Println(dbAccessString)
+	
+
 	db, e := sql.Open(
 		"postgres",
-		"host=localhost port=5432 dbname=kasegi user=postgres password=password sslmode=disable")
+		dbAccessString)
 	if e != nil {
 		fmt.Println(e)
 		return
@@ -181,7 +194,7 @@ func loadEnv() {
 	// ここで.envファイル全体を読み込みます。
 	// この読み込み処理がないと、個々の環境変数が取得出来ません。
 	// 読み込めなかったら err にエラーが入ります。
-	err := godotenv.Load("../oidc_credentials.env")
+	err := godotenv.Load("./stg.env")
 
 	// もし err がnilではないなら、"読み込み出来ませんでした"が出力されます。
 	if err != nil {
@@ -195,7 +208,9 @@ func loadEnv() {
 }
 
 func main() {
+	fmt.Println("env:" + os.Getenv("ENV"))
 	loadEnv()
+	
 	var google = NewGoogle()
 	webServerTest(google)
 }
