@@ -16,7 +16,5 @@
 
 kasegi/DB/data/*
 
-oidc_credentials
-
 *.pem
-oidc_credentials.env
+*/credentials.env
