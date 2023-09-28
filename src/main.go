@@ -35,7 +35,7 @@ func selectTest(db *sql.DB) {
 	fmt.Println(e)
 }
 
-func webServerTest(google *Google) {
+func webServerTest() {
 
 	userRepository := repository.UserRepository{}
 	loginSessionRepository := repository.LoginSessionRepository{}
@@ -111,14 +111,21 @@ func webServerTest(google *Google) {
 		})
 	})
 	r.GET("/auth", func(c *gin.Context) {
-		var redirectUrl = google.GetLoginURL("state")// todo: ランダムなstateを生成する
-		fmt.Println(redirectUrl)
-		c.JSON(200, gin.H{
-			"redirect-url": redirectUrl,
-		})
+		var redirectUrl = c.Query("redirectUrl")
+		if redirectUrl == ""{
+			c.JSON(200, gin.H{
+				"message": "redirectUrl is required",
+			})
+		}else{
+			var loginUrl = NewGoogle(redirectUrl).GetLoginURL("state")// todo: ランダムなstateを生成する
+			fmt.Println(loginUrl)
+			c.JSON(200, gin.H{
+				"redirect-url": loginUrl,
+			})
+		}
 	})
 	r.GET("/google/callback", func(c *gin.Context) {
-		var email, error = google.VerifyAndGetEmail(c.Query("code"))
+		var email, error = NewGoogle(c.Query("redirectUrl")).VerifyAndGetEmail(c.Query("code"))
 		if error != nil {
 			c.JSON(500, gin.H{
 				"message": error.Error(),
@@ -211,6 +218,5 @@ func main() {
 	fmt.Println("env:" + os.Getenv("ENV"))
 	loadEnv()
 	
-	var google = NewGoogle()
-	webServerTest(google)
+	webServerTest()
 }

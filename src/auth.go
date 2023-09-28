@@ -13,15 +13,11 @@ type Google struct {
 	Config *oauth2.Config
 }
 
-func NewGoogle() *Google {
-	return newGoogle()
+func NewGoogle(redirectUrl string) *Google {
+	return newGoogle(redirectUrl)
 }
 
-func newGoogle() *Google {
-	var redirectURL string = "http://localhost:8080/google/callback"
-	if(os.Getenv("ENV") == "stg") {
-		redirectURL = os.Getenv("redirectUrl")
-	}
+func newGoogle(redirectUrl string) *Google {
 
 	google := &Google{
 		Config: &oauth2.Config{
@@ -32,7 +28,7 @@ func newGoogle() *Google {
 				TokenURL: os.Getenv("TokenEndpoint"),
 			},
 			Scopes:      []string{"https://www.googleapis.com/auth/userinfo.email"},
-			RedirectURL: redirectURL,
+			RedirectURL: redirectUrl,
 		},
 	}
 
