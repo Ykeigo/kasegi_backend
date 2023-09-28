@@ -49,7 +49,7 @@ func webServerTest(google *Google) {
 		" port=" + os.Getenv("dbServerPort")+
 		" dbname=kasegi"+
 		" user="+os.Getenv("dbServerUserId") +
-		"password=" +os.Getenv("dbServerPs")+
+		" password=" +os.Getenv("dbServerPs")+
 		" sslmode=disable"
 	}
 	fmt.Println(dbAccessString)
