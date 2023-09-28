@@ -17,4 +17,4 @@
 kasegi/DB/data/*
 
 *.pem
-*/credentials.env
+*.env
