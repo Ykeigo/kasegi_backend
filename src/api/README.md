@@ -18,3 +18,7 @@ curl  -X POST -H "Content-Type: application/json" -d "{\"SessionToken\":\"$sessi
  
 listMyChecklistTemplate
 curl  -X POST -H "Content-Type: application/json" -d "{\"SessionToken\":\"$session\"}" localhost:8080/listMyChecklistTemplate
+
+
+getMyUser
+curl  -X POST -H "Content-Type: application/json" -d "{\"SessionToken\":\"$session\"}" localhost:8080/getMyUser
