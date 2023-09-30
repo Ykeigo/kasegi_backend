@@ -41,6 +41,7 @@ func webServerTest() {
 	loginSessionRepository := repository.LoginSessionRepository{}
 	gameMatchApi := api.GameMatchApi{}
 	checklistTemplateApi := api.ChecklistTemplateApi{}
+	userApi := api.UserApi{}
 	
 	var dbAccessString= "host=localhost port=5432 dbname=kasegi user=postgres password=password sslmode=disable"
 	
@@ -193,6 +194,9 @@ func webServerTest() {
 	})	
 	r.POST("/listMyChecklistTemplate", func(c *gin.Context) {
 		checklistTemplateApi.ListMyChecklistTemplate(c, db)
+	})
+	r.POST("/getMyUser", func(c *gin.Context) {
+		userApi.GetMyUser(c, db)
 	})
 	r.Run(":8080")
 }
