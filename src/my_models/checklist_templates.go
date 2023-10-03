@@ -24,6 +24,7 @@ import (
 // ChecklistTemplate is an object representing the database table.
 type ChecklistTemplate struct {
 	ID              string `boil:"id" json:"id" toml:"id" yaml:"id"`
+	TemplateName    string `boil:"template_name" json:"template_name" toml:"template_name" yaml:"template_name"`
 	GameTitleID     string `boil:"game_title_id" json:"game_title_id" toml:"game_title_id" yaml:"game_title_id"`
 	CreatedByUserID string `boil:"created_by_user_id" json:"created_by_user_id" toml:"created_by_user_id" yaml:"created_by_user_id"`
 
@@ -33,20 +34,24 @@ type ChecklistTemplate struct {
 
 var ChecklistTemplateColumns = struct {
 	ID              string
+	TemplateName    string
 	GameTitleID     string
 	CreatedByUserID string
 }{
 	ID:              "id",
+	TemplateName:    "template_name",
 	GameTitleID:     "game_title_id",
 	CreatedByUserID: "created_by_user_id",
 }
 
 var ChecklistTemplateTableColumns = struct {
 	ID              string
+	TemplateName    string
 	GameTitleID     string
 	CreatedByUserID string
 }{
 	ID:              "checklist_templates.id",
+	TemplateName:    "checklist_templates.template_name",
 	GameTitleID:     "checklist_templates.game_title_id",
 	CreatedByUserID: "checklist_templates.created_by_user_id",
 }
@@ -55,10 +60,12 @@ var ChecklistTemplateTableColumns = struct {
 
 var ChecklistTemplateWhere = struct {
 	ID              whereHelperstring
+	TemplateName    whereHelperstring
 	GameTitleID     whereHelperstring
 	CreatedByUserID whereHelperstring
 }{
 	ID:              whereHelperstring{field: "\"checklist_templates\".\"id\""},
+	TemplateName:    whereHelperstring{field: "\"checklist_templates\".\"template_name\""},
 	GameTitleID:     whereHelperstring{field: "\"checklist_templates\".\"game_title_id\""},
 	CreatedByUserID: whereHelperstring{field: "\"checklist_templates\".\"created_by_user_id\""},
 }
@@ -80,8 +87,8 @@ func (*checklistTemplateR) NewStruct() *checklistTemplateR {
 type checklistTemplateL struct{}
 
 var (
-	checklistTemplateAllColumns            = []string{"id", "game_title_id", "created_by_user_id"}
-	checklistTemplateColumnsWithoutDefault = []string{"id", "game_title_id", "created_by_user_id"}
+	checklistTemplateAllColumns            = []string{"id", "template_name", "game_title_id", "created_by_user_id"}
+	checklistTemplateColumnsWithoutDefault = []string{"id", "template_name", "game_title_id", "created_by_user_id"}
 	checklistTemplateColumnsWithDefault    = []string{}
 	checklistTemplatePrimaryKeyColumns     = []string{"id"}
 	checklistTemplateGeneratedColumns      = []string{}
