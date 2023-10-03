@@ -42,6 +42,7 @@ func webServerTest() {
 	gameMatchApi := api.GameMatchApi{}
 	checklistTemplateApi := api.ChecklistTemplateApi{}
 	userApi := api.UserApi{}
+	checklistTemplateRepository := repository.ChecklistTemplateRepository{}
 	
 	var dbAccessString= "host=localhost port=5432 dbname=kasegi user=postgres password=password sslmode=disable"
 	
@@ -139,11 +140,24 @@ func webServerTest() {
 				userRepository.Insert(models.User{Email: email}, db)
 				existUser = userRepository.FindByEmail(email, db)
 			}
-			//todo:セッションを発行する
+			//セッションを発行する
 			var SessionToken = util.IdGenerator{}.GenerateSurrogateKey()
 			loginSessionRepository.DeleteByUserId(existUser[0].ID, db)
 			loginSessionRepository.Insert(models.LoginSession{UserID: existUser[0].ID, SessionToken: SessionToken}, db)
-			
+		
+			//チェックリストテンプレートの初期値を作成する
+			var checklistTemplate = repository.ChecklistTemplate{
+				Id: util.IdGenerator{}.GenerateSurrogateKey(),
+				GameTitleId: "unused",
+				CreatedByUserId: existUser[0].ID,
+				TemplateName: "サンプル1",
+				CheckItems: []repository.TemplateCheckItem{
+					{Title: "楽しかった？"},
+					{Title: "ベストを尽くした？"},
+				},
+			}
+			checklistTemplateRepository.Insert(checklistTemplate, db)
+
 			c.JSON(200, gin.H{
 				"message": "login completed",
 				"email" : email,
