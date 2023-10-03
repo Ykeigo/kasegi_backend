@@ -76,6 +76,7 @@ func webServerTest() {
 			"https://localhost:3000",
 			"http://localhost:3000/",
 			"https://localhost:3000/",
+			"https://real-exp-kasegi.com",
 			"https://real-exp-kasegi.com/*",
 		},
 		// アクセスを許可したいHTTPメソッド(以下の例だとPUTやDELETEはアクセスできません)

@@ -25,6 +25,7 @@ type ChecklistTemplate struct {
 	Id string
 	GameTitleId string
 	CreatedByUserId string
+	TemplateName string
 	CheckItems []TemplateCheckItem
 }
 
@@ -34,6 +35,7 @@ func (ur ChecklistTemplateRepository)Insert(checklistTemplate ChecklistTemplate,
 		ID: util.IdGenerator{}.GenerateSurrogateKey(),
 		GameTitleID: checklistTemplate.GameTitleId,
 		CreatedByUserID: checklistTemplate.CreatedByUserId,
+		TemplateName: checklistTemplate.TemplateName,
 	}
 
 	for _, checkItem := range checklistTemplate.CheckItems {
@@ -61,6 +63,7 @@ func convertChecklistTemplateDbModelToChecklistTemplate(checklistTemplateDbModel
 		Id: checklistTemplateDbModel.ID,
 		GameTitleId: checklistTemplateDbModel.GameTitleID,
 		CreatedByUserId: checklistTemplateDbModel.CreatedByUserID,
+		TemplateName: checklistTemplateDbModel.TemplateName,
 		CheckItems: checkItems,	
 	}
 	return checklistTemplate

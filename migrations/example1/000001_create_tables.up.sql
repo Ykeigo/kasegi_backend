@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS game_match_checklist_items(
 
 CREATE TABLE IF NOT EXISTS checklist_templates(
     id VARCHAR (64) PRIMARY KEY,
+    template_name VARCHAR (64) NOT NULL,
     game_title_id VARCHAR (64) NOT NULL,
     created_by_user_id VARCHAR (64) NOT NULL
 );

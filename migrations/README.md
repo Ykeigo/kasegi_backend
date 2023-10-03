@@ -18,9 +18,6 @@ migrate -database $POSTGRESQL_URL -path example1 down ${下げるバージョン
 migrate -database $POSTGRESQL_URL -path example1 force ${VERSION}
 ${VERSION}の部分はエラーで出ているVERSIONを数字で指定。https://qiita.com/juchilian/items/0bfed79cc1229deb4c62
 
-
-ローカルDB起動 -> srcのreadme
-
 テーブル作成
 createdb -h postgres -U postgres 
 
